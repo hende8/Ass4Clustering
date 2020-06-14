@@ -1,30 +1,24 @@
 import pandas as pd
-import xlrd
+from sklearn.preprocessing import StandardScaler
 
-data = pd.read_excel("C:\\Users\\shira\\Desktop\\shiran\\Dataset.xlsx", header=0)
-data.to_csv("C:\\Users\\shira\\Desktop\\shiran\\Data.cvc", index=False, quotechar="'")
-df = pd.read_csv("C:\\Users\\shira\\Desktop\\shiran\\Data.cvc")
+data = pd.read_excel("C:\\Users\\HEN\\Downloads\\Data.xlsx",header=0)
+data.to_csv("C:\\Users\\HEN\\Downloads\\Data.csv", index=False, quotechar="'")
+df = pd.read_csv("C:\\Users\\HEN\\Downloads\\Data.csv")
 # print(df)
-for col in list(df):
-    if(col=='country'):continue
-    df[col].fillna(df[col].mean(), inplace=True)
+def clearna(data):
+    for col in list(data):
+        if(col=='country'):continue
+        data[col].fillna(data[col].mean(), inplace=True)
+    return data
 
-print(df.head(10))
+df = clearna(df)
+standartscalar= StandardScaler()
+df_scaled = pd.DataFrame(standartscalar.fit_transform(df.iloc[:,2:]),columns = df.columns[2:])
+new = df[['country', 'year']].copy()
+finalStandard = new.join(df_scaled)
+df3 = finalStandard.groupby('country').mean()
 
-df3 = df.groupby('country').mean()
-print(df3.head(10))
-for col in df3:
-    print(df3[col].head(10))
-
-# c = d6tstack.convert_xls.XLStoCSVMultiSheet('C:\\Users\\HEN\\Downloads\\Data.xlsx')
-# c.convert_all() # ['multisheet-Sheet1.csv','multisheet-Sheet2.csv']
-# print(c)
-
-
-# xls = xlrd.open_workbook('C:\\Users\\HEN\\Downloads\\Data.xlsx', on_demand=True)
-# df = pd.read_excel("C:\\Users\\HEN\\Downloads\\Data.xlsx", sheet_name=xls.sheet_names())
 #
-# print(df.columns)
+# df4 = pd.concat([df.columns[:1], df_scaled.reset_index(drop=True)], axis=1)
+# print(df4)
 
-# print whole sheet data
-# print(df)
